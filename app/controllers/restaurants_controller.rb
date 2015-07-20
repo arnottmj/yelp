@@ -1,5 +1,5 @@
 class RestaurantsController < ApplicationController
   def index
-    'Hello from the index action'
+  @restaurants = Restaurant.all
   end
 end
