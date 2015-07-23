@@ -59,6 +59,7 @@ feature 'restaurants' do
   context 'when logged in' do
     before do
       sign_up
+      new_restaurant
     end
 
     context 'creating restaurants' do
@@ -84,30 +85,40 @@ feature 'restaurants' do
     end
 
 
-
     context 'editing restaurants' do
 
-      before {Restaurant.create name: 'KFC'}
-
-      scenario 'let a user edit a restaurant' do
+      scenario 'lets a user edit their own restaurants' do
         visit '/restaurants'
-        click_link 'Edit KFC'
-        fill_in 'Name', with: 'Kentucky Fried Chicken'
+        click_link 'Edit delicious'
+        fill_in 'Name', with: 'more delicious'
         click_button 'Update Restaurant'
-        expect(page).to have_content 'Kentucky Fried Chicken'
+        expect(page).to have_content 'more delicious'
+        expect(current_path).to eq '/restaurants'
+      end
+
+      scenario 'stops a user editing other peoples restaurants' do
+        Restaurant.create name: 'Restaurant with no ID'
+        visit '/restaurants'
+        click_link 'Edit Restaurant with no ID'
+        expect(page).to have_content 'You did not add that restaurant'
         expect(current_path).to eq '/restaurants'
       end
     end
 
     context 'deleting restaurants' do
 
-      before {Restaurant.create name: 'KFC'}
-
-      scenario 'removes a restaurant when a user clicks a delete link' do
+      scenario 'lets a user delete their own restaurants' do
         visit '/restaurants'
-        click_link 'Delete KFC'
-        expect(page).not_to have_content 'KFC'
+        click_link 'Delete delicious'
+        expect(page).not_to have_content 'delicious'
         expect(page).to have_content 'Restaurant deleted successfully'
+      end
+
+      scenario 'stops a user deleting other peoples restaurants' do
+        Restaurant.create name: 'Restaurant with no ID'
+        visit '/restaurants'
+        click_link 'Delete Restaurant with no ID'
+        expect(page).to have_content 'You did not add that restaurant'
       end
     end
 
@@ -118,6 +129,13 @@ feature 'restaurants' do
       fill_in 'Password', with: '12345678'
       fill_in 'Password confirmation', with: '12345678'
       click_button 'Sign up'
+    end
+
+    def new_restaurant
+      visit '/restaurants'
+      click_link 'Add a restaurant'
+      fill_in 'Name', with: 'delicious'
+      click_button 'Create Restaurant'
     end
   end
 end
