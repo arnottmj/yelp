@@ -29,6 +29,13 @@ feature 'reviewing' do
       expect(page).to have_content('so so')
     end
 
+    # scenario 'users can only leave one review per restaurant' do
+    #   visit '/restaurants'
+  
+    #   expect(current_path).to eq '/restaurants'
+    #   expect(page).to have_content('so so')
+    # end
+
     scenario 'allows delete a review if it belongs to them' do
       visit '/restaurants'
       click_link 'Delete delicious'
