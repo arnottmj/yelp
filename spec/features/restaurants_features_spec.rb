@@ -1,36 +1,64 @@
 require 'rails_helper'
 
 feature 'restaurants' do
+  context 'no restaurants have been added' do
+    scenario 'should display a prompt to add a restaurant' do
+      visit '/restaurants'
+      expect(page).to have_content 'No restaurants yet'
+      expect(page).to have_link 'Add a restaurant'
+    end
+  end
+
+  context 'restaurants have been added' do
+    before do
+      Restaurant.create(name:'KFC')
+    end
+
+    scenario 'display restaurants' do
+      visit '/restaurants'
+      expect(page).to have_content('KFC')
+      expect(page).not_to have_content('No restaurants yet')
+    end
+  end
+
+  context 'viewing restaurants' do
+
+    let!(:kfc){Restaurant.create(name:'KFC')}
+
+    scenario 'lets a user view a restaurant' do
+      visit '/restaurants'
+      click_link 'KFC'
+      expect(page).to have_content 'KFC'
+      expect(current_path).to eq "/restaurants/#{kfc.id}"
+    end
+  end
 
   context 'when not logged in' do
-    scenario 'lets visitor see the index page' do
+
+    before {Restaurant.create name: 'KFC'}
+
+    scenario 'a visitor cannot add a restaurant' do
       visit '/restaurants'
+      click_link 'Add a restaurant'
+      expect(page).to have_content 'Log in'
+    end
+
+    scenario 'a visitor cannot edit a restaurant' do
+      visit '/restaurants'
+      click_link 'Edit KFC'
+      expect(page).to have_content 'Log in'
+    end
+
+    scenario 'a visitor cannot delete a restaurant' do
+      visit '/restaurants'
+      click_link 'Delete KFC'
+      expect(page).to have_content 'Log in'
     end
   end
 
   context 'when logged in' do
     before do
       sign_up
-    end
-
-    context 'no restaurants have been added' do
-      scenario 'should display a prompt to add a restaurant' do
-        visit '/restaurants'
-        expect(page).to have_content 'No restaurants yet'
-        expect(page).to have_link 'Add a restaurant'
-      end
-    end
-
-    context 'restaurants have been added' do
-      before do
-        Restaurant.create(name:'KFC')
-      end
-
-      scenario 'display restaurants' do
-        visit '/restaurants'
-        expect(page).to have_content('KFC')
-        expect(page).not_to have_content('No restaurants yet')
-      end
     end
 
     context 'creating restaurants' do
@@ -55,17 +83,7 @@ feature 'restaurants' do
       end
     end
 
-    context 'viewing restaurants' do
 
-      let!(:kfc){Restaurant.create(name:'KFC')}
-
-      scenario 'lets a user view a restaurant' do
-        visit '/restaurants'
-        click_link 'KFC'
-        expect(page).to have_content 'KFC'
-        expect(current_path).to eq "/restaurants/#{kfc.id}"
-      end
-    end
 
     context 'editing restaurants' do
 

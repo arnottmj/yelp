@@ -30,6 +30,7 @@ class RestaurantsController < ApplicationController
 
   def edit
     @restaurant = Restaurant.find(params[:id])
+    
   end
 
   def update
