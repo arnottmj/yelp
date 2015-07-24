@@ -12,7 +12,7 @@ class ReviewsController < ApplicationController
     # @restaurant.reviews.create(review_params)
     # redirect_to restaurants_path
     @restaurant = Restaurant.find(params[:restaurant_id])
-    @review = Review.new(review_params)
+    @review = @restaurant.reviews.build(review_params.merge({user: current_user}))
 
     if @review.save
       redirect_to restaurants_path
@@ -27,8 +27,6 @@ class ReviewsController < ApplicationController
   end
 
   def review_params
-    params[:review][:user_id] = current_user.id
-    params[:review][:restaurant_id] = params[:restaurant_id]
-    params.require(:review).permit(:thoughts, :rating, :user_id, :restaurant_id)
+    params.require(:review).permit(:thoughts, :rating)
   end
 end

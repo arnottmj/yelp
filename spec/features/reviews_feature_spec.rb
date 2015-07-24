@@ -16,28 +16,26 @@ feature 'reviewing' do
     before do
       sign_up
       new_restaurant
+      review_restaurant
     end
 
     scenario 'allows users to leave a review using a form' do
-      review_restaurant
       expect(current_path).to eq '/restaurants'
       expect(page).to have_content('so so')
     end
 
     scenario 'users can only leave one review per restaurant' do
       review_restaurant
-      review_restaurant
-
       expect(current_path).to eq '/restaurants'
       expect(page).to have_content('You have already reviewed this restaurant')
     end
 
-    scenario 'allows delete a review if it belongs to them' do
-      visit '/restaurants'
-      click_link 'Delete delicious'
-      expect(page).not_to have_content 'delicious'
-      expect(page).to have_content 'Restaurant deleted successfully'
-    end
+    # scenario 'allows delete a review if it belongs to them' do
+    #   visit '/restaurants'
+    #   click_link 'Delete review for delicious'
+    #   expect(page).not_to have_content 'delicious'
+    #   expect(page).to have_content 'Restaurant deleted successfully'
+    # end
 
     def sign_up
       visit '/restaurants'
