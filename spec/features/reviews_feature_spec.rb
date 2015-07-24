@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 feature 'reviewing' do
-  
+
   context 'when not logged in' do
     scenario 'a visitor cannot write a review' do
       Restaurant.create name: 'KFC'
@@ -19,22 +19,18 @@ feature 'reviewing' do
     end
 
     scenario 'allows users to leave a review using a form' do
-      visit '/restaurants'
-      click_link 'Review delicious'
-      fill_in "Thoughts", with: "so so"
-      select '3', from: 'Rating'
-      click_button 'Leave Review'
-
+      review_restaurant
       expect(current_path).to eq '/restaurants'
       expect(page).to have_content('so so')
     end
 
-    # scenario 'users can only leave one review per restaurant' do
-    #   visit '/restaurants'
-  
-    #   expect(current_path).to eq '/restaurants'
-    #   expect(page).to have_content('so so')
-    # end
+    scenario 'users can only leave one review per restaurant' do
+      review_restaurant
+      review_restaurant
+
+      expect(current_path).to eq '/restaurants'
+      expect(page).to have_content('You have already reviewed this restaurant')
+    end
 
     scenario 'allows delete a review if it belongs to them' do
       visit '/restaurants'
@@ -52,11 +48,19 @@ feature 'reviewing' do
       click_button 'Sign up'
     end
 
-     def new_restaurant
+    def new_restaurant
       visit '/restaurants'
       click_link 'Add a restaurant'
       fill_in 'Name', with: 'delicious'
       click_button 'Create Restaurant'
+    end
+
+    def review_restaurant
+      visit '/restaurants'
+      click_link 'Review delicious'
+      fill_in "Thoughts", with: "so so"
+      select '3', from: 'Rating'
+      click_button 'Leave Review'
     end
   end
 end
