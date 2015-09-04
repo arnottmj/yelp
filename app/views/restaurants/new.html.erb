@@ -5,13 +5,12 @@
       <% @restaurant.errors.full_messages.each do |message| %>
         <li><%= message %></li>
       <% end %>
-    </ul>sr
+    </ul>
+    sr
   </section>
 <% end %>
-
 <%= form_for @restaurant do |f| %>
   <%= f.label :name %>
   <%= f.text_field :name %>
   <%= f.submit %>
 <% end %>
-

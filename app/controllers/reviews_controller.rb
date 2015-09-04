@@ -8,9 +8,6 @@ class ReviewsController < ApplicationController
   end
 
   def create
-    # @restaurant = Restaurant.find(params[:restaurant_id])
-    # @restaurant.reviews.create(review_params)
-    # redirect_to restaurants_path
     @restaurant = Restaurant.find(params[:restaurant_id])
     @review = @restaurant.reviews.build(review_params.merge({user: current_user}))
 
@@ -23,6 +20,18 @@ class ReviewsController < ApplicationController
       else
         render :new
       end
+    end
+  end
+
+  def destroy
+    @review = Review.find(params[:id])
+    if current_user.reviews.include?(@review)
+      @review.destroy
+      flash[:notice] = 'Review deleted successfully'
+      redirect_to '/restaurants'
+    else
+      flash[:notice] = 'You did not add that review'
+      redirect_to '/restaurants'
     end
   end
 

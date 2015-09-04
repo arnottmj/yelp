@@ -30,12 +30,12 @@ feature 'reviewing' do
       expect(page).to have_content('You have already reviewed this restaurant')
     end
 
-    # scenario 'allows delete a review if it belongs to them' do
-    #   visit '/restaurants'
-    #   click_link 'Delete review for delicious'
-    #   expect(page).not_to have_content 'delicious'
-    #   expect(page).to have_content 'Restaurant deleted successfully'
-    # end
+    scenario 'allows a review to be deleted if it belongs to the user' do
+      visit '/restaurants'
+      click_link 'Delete review'
+      expect(page).not_to have_content 'Delete Review'
+      expect(page).to have_content 'Review deleted successfully'
+    end
 
     def sign_up
       visit '/restaurants'
@@ -62,3 +62,6 @@ feature 'reviewing' do
     end
   end
 end
+
+# no test for 'doesnt allow a review to be deleted if it does not belong to the user' as it requires a whole new user to sign in
+# havent done the test for 'not able to delete a review' when not logged in
